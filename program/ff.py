@@ -1,190 +1,228 @@
 import datetime
-import sys  
-#  defining a function available
+import sys
+
+# Define constants for VAT and shipping cost
+VAT_RATE = 0.13
+SHIPPING_COST = 50  # Flat shipping cost
+
+# Function to read inventory from a text file
 def available():
-    # creating a dictionary
     av = {}
-    # print heading of laptop details
-    print("Name\t\t   ","Brand\t\t","Price\t\t   ","Quantity\t\t      ","Processor\t     ","Graphics")
-    # openeing txt file in read mode
-    with open('laptop.txt','r') as f:   
+    print(f"{'Name':<20}{'Brand':<30}{'Price':<10}{'Quantity':<10}")
+    with open('furniture.txt', 'r') as f:
         for line in f:
-            name, brand, price, quantity, processor, graphics= line.strip().split(', ')
-            av[str(name.upper())]={'brand': brand,'price': float(price.strip("$")),'quantity': int(quantity),'processor':processor,'graphics':graphics}
-            # printing all laptop details
-            print(f"{name:<20}{brand:<21}{price:<22}{quantity:<23}{processor:<24}{graphics}")
-        return av
-    # creating a function companies
-def companies():
-    print("List of Available Laptops: ")
-    laptopall = available()
-    d= str(input("Do you want to proceed (Yes/No): "))
-    # checking whether user want to continue or not
-    if d.upper()=='YES':
-        namedis=str(input("Enter name of distributor: "))
-        namelap= str(input("Enter name of laptop: "))
-        # checking whether demanded laptop is available or not
-        if namelap.upper() not in laptopall:
-            print("Not available")
-            companies()
-        else:
-            laptop = laptopall[namelap.upper()]
-        checked = False
-        # checking condition is true or false
-        while checked == False:
-            # try block to catch invalid input like string
             try:
-                quantity  = int(input("Enter number of laptop to purchase: "))
-                # if quantity less than 0 print error message
-                if (quantity <=0):
-                    print("Enter valid amount")
-                    checked = False
-                else:
-                    checked = True
-            except :
-                print("Please enter valid value")
-        
-        total_without_VAT=laptop['price']*quantity
-        laptop['quantity'] +=quantity
-        Vat = (0.13*total_without_VAT)
-        grand_total=Vat+total_without_VAT 
-    elif d.upper()=='NO':
-        options()
-    else :
-        print("Please enter appropriate choice:")
-        
-    # creating a invoice 
+                id_, brand, name, quantity, price = line.strip().split(', ')
+                price = price.strip('$')
+                av[name.lower()] = {
+                    'id': id_,
+                    'brand': brand,
+                    'name': name,  # Store the original case
+                    'price': float(price),
+                    'quantity': int(quantity)
+                }
+                print(f"{name:<20}{brand:<30}{price:<10}{quantity:<10}")
+            except ValueError as e:
+                print(f"Error processing line: {line.strip()} - {e}")
+    return av
+
+# Function to generate invoice for multiple items
+def generate_invoice(items, filename, invoice_type, is_manufacturing=True):
     invoice = f'''
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
-                                                  
-                                                                   
-    *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
     Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}     
-    Retailer name: {namedis.upper()}                                  
-   ___________________________________________________________________
-    Product: {namelap.upper()}                                        
-    Quantity: {quantity}                                              
-    Per price: {laptop['price']:.2f}                                  
-   ___________________________________________________________________
-    Total without VAT: {total_without_VAT:.2f}                        
-    Total: {grand_total}                                              
-   ___________________________________________________________________
-    Thank you for doing business with us!                             
-   ___________________________________________________________________
-    '''
-    #  setting invoice to txt file
-    with open('retail.txt','w') as f:
-        f.write(invoice)
-        print("Your bill has been generated")
-        #  updating value in txt file
-    with open('laptop.txt', 'w') as f:
-        for namelap, details in laptopall.items():
-            name=namelap
-            brand = details ['brand']
-            price = details ['price']
-            quantity=details ['quantity']
-            processor=details ['processor']
-            graphics=details ['graphics']
-            f.write(f'{name}, {brand}, ${price}, {quantity}, {processor}, {graphics}\n')
-            
-        
-def customer():
-    print("List of Available Laptops: ")
-    laptopall = available()
-    d= str(input("Do yo want to proceed (Yes/No): "))
-    if d.upper()=='YES':
-        name = str(input("Enter your name: "))
-        namelap = input("Enter the name of laptop: ")
-        # checking whether demanded laptop is available or not
-        if namelap.upper() not in laptopall:
-            print("Laptop not available")
-            return customer()
-        laptop_upper=laptopall[namelap.upper()]
-        checked = False
-        while checked == False:
-            try:
-                quantity  = int(input("Enter number of laptop to purchase: "))
-                if (quantity <=0):
-                    print("Enter valid amount")
-                    checked = False
-                else:
-                    checked = True
-            except ValueError:
-                print("Please enter valid value")
-            if laptop_upper['quantity']<quantity:
-                print("Not enough stock")
-                return customer()
-        # laptop_upper['quantity']-=quantity
-        price_without_shipping =laptop_upper['price']*quantity
-        s = str(input("Do you want it to be shipped?"))
-        if(s.upper()=='YES'):
-            d = str(input("Enter your location: "))
-            shipping = 50
-        else:
-            shipping =0
-            d="none"
-        total =price_without_shipping+shipping
-    elif d.upper()=='NO':
-        return options()
-
-    invoice =f'''
-     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*  
-     *                    Itahari Laptop Shop                      *  
-     *                    Itahari-20, Sunsari                      *    
-     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*    
-    Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}     
-    Customer name: {name.upper()}                                                           
-    Shipping Location: {d.upper()}                                      
+    {invoice_type}
     ___________________________________________________________________
-    Product: {namelap.upper()}                                         
-    Quantity: {quantity}                                               
-    Per price: {laptop_upper['price']:.2f}                             
-   ___________________________________________________________________             
-   Shipping cost = {shipping}                                          
-   Total: {total}                                                      
-   ___________________________________________________________________
-    Thank you for doing business with us!                              
-   ___________________________________________________________________     
     '''
     
-    with open ('sell_laptop.txt', 'w') as f:
+    for item in items:
+        if is_manufacturing:
+            invoice += f'''
+            Product: {item['name']}                                        
+            Quantity: {item['quantity']}                                              
+            Per price: {item['price']:.2f}                                  
+            Total without VAT: {item['total_without_VAT']:.2f}                        
+            Total with VAT: {item['grand_total']:.2f}                                              
+            ___________________________________________________________________
+            '''
+        else:
+            invoice += f'''
+            Product: {item['name']}                                        
+            Quantity: {item['quantity']}                                              
+            Per price: {item['price']:.2f}                                  
+            Total without Shipping: {item['total_without_Shipping']:.2f}                        
+            Total with Shipping: {item['grand_total']:.2f}                                              
+            ___________________________________________________________________
+            '''
+    
+    invoice += '''
+    Thank you for your order!
+    ___________________________________________________________________
+    '''
+    
+    with open(filename, 'w') as f:
         f.write(invoice)
-        print("Your bill has been generated")
-    laptop_upper['quantity']-= quantity
-    
-    with open('laptop.txt','w') as f:
-        for namelap, details in laptopall.items():
-            name = namelap
-            brand = details['brand']
-            price = details['price']
-            quantity = details['quantity']
-            processor = details['processor']
-            graphics = details['graphics']
-            f.write(f"{name}, {brand}, ${price}, {quantity}, {processor}, {graphics}\n")
+        print("Your invoice has been generated")
 
+# Function to order furniture from manufacturer
+def order_furniture(distributor_name=None, existing_order_items=None):
+    print("List of Available Furniture: ")
+    furniture_inventory = available()
     
-print("-----------------------------------------------------------")
-print("--------------------WELCOME TO OUR SHOP--------------------")
-print("-----------------------------------------------------------")
+    if existing_order_items is None:
+        existing_order_items = []
+
+    while True:
+        if distributor_name is None:
+            proceed = input("Do you want to proceed with an order (Yes/No): ")
+            if proceed.upper() != 'YES':
+                return
+
+            distributor_name = input("Enter name of distributor: ")
+        
+        furniture_name = input("Enter name of furniture: ").strip().lower()
+        if furniture_name not in furniture_inventory:
+            print("Furniture not available")
+            continue
+        furniture_item = furniture_inventory[furniture_name]
+
+        while True:
+            try:
+                quantity = int(input("Enter quantity to order: "))
+                if quantity <= 0:
+                    print("Enter a valid quantity greater than zero")
+                else:
+                    break
+            except ValueError:
+                print("Please enter a valid number for quantity")
+
+        total_without_VAT = furniture_item['price'] * quantity
+        vat = VAT_RATE * total_without_VAT
+        grand_total = vat + total_without_VAT
+
+        # Update the inventory
+        furniture_item['quantity'] += quantity
+        existing_order_items.append({
+            'name': furniture_item['name'],
+            'quantity': quantity,
+            'price': furniture_item['price'],
+            'total_without_VAT': total_without_VAT,
+            'grand_total': grand_total
+        })
+
+        print(f"Order placed for {quantity} {furniture_item['name']}.")
+        
+        more_items = input("Do you want to add more items (Yes/No)? ")
+        if more_items.upper() != 'YES':
+            break
+
+    # Generate the invoice
+    generate_invoice(existing_order_items, 'manufacturer_order.txt', f'Distributor name: {distributor_name.upper()}', is_manufacturing=True)
+
+    # Update the inventory file
+    with open('furniture.txt', 'w') as f:
+        for item in furniture_inventory.values():
+            id_ = item['id']
+            brand = item['brand']
+            name = item['name']
+            price = item['price']
+            quantity = item['quantity']
+            f.write(f'{id_}, {brand}, {name}, {quantity}, ${price}\n')
+
+# Function to handle customer purchase
+def sell_furniture(customer_name=None, existing_purchase_items=None):
+    print("List of Available Furniture: ")
+    furniture_inventory = available()
+    
+    if existing_purchase_items is None:
+        existing_purchase_items = []
+
+    while True:
+        if customer_name is None:
+            proceed = input("Do you want to proceed with a purchase (Yes/No): ")
+            if proceed.upper() != 'YES':
+                return
+
+            customer_name = input("Enter your name: ")
+        
+        furniture_name = input("Enter the name of furniture: ").strip().lower()
+        if furniture_name not in furniture_inventory:
+            print("Furniture not available")
+            continue
+        furniture_item = furniture_inventory[furniture_name]
+
+        while True:
+            try:
+                quantity = int(input("Enter quantity to purchase: "))
+                if quantity <= 0:
+                    print("Enter a valid quantity greater than zero")
+                elif furniture_item['quantity'] < quantity:
+                    print("Not enough stock")
+                else:
+                    break
+            except ValueError:
+                print("Please enter a valid number for quantity")
+
+        price_without_shipping = furniture_item['price'] * quantity
+        shipping = SHIPPING_COST if input("Do you want it to be shipped? (Yes/No) ").upper() == 'YES' else 0
+        total = price_without_shipping + shipping
+
+        # Update the inventory
+        furniture_item['quantity'] -= quantity
+        existing_purchase_items.append({
+            'name': furniture_item['name'],
+            'quantity': quantity,
+            'price': furniture_item['price'],
+            'total_without_Shipping': price_without_shipping,
+            'grand_total': total
+        })
+
+        print(f"Purchase completed for {quantity} {furniture_item['name']}.")
+
+        more_items = input("Do you want to add more items (Yes/No)? ")
+        if more_items.upper() != 'YES':
+            break
+
+    # Generate the invoice
+    generate_invoice(existing_purchase_items, 'customer_invoice.txt', f'Customer name: {customer_name.upper()}', is_manufacturing=False)
+
+    # Update the inventory file
+    with open('furniture.txt', 'w') as f:
+        for item in furniture_inventory.values():
+            id_ = item['id']
+            brand = item['brand']
+            name = item['name']
+            price = item['price']
+            quantity = item['quantity']
+            f.write(f"{id_}, {brand}, {name}, {quantity}, ${price}\n")
+
+# Display menu options
 def details():
     print("A: Available details")
     print("B: Place Order from Manufacturer")
-    print("C: Buy a laptop: ")
-    print("D: Exit")  
-    print("Choose desired option:") 
+    print("C: Buy Furniture")
+    print("D: Exit")
+    print("Choose desired option:")
+
+# Main options handler
 def options():
-    option= str(input())
-    if option.upper()=='A':
+    option = input()
+    if option.upper() == 'A':
         available()
-    elif option.upper()=='B':
-        companies()
-    elif option.upper()=='C':
-        customer()
-    elif option.upper()=='D':       
+    elif option.upper() == 'B':
+        order_furniture()
+    elif option.upper() == 'C':
+        sell_furniture()
+    elif option.upper() == 'D':
         print("Thank you for shopping with us.")
         sys.exit()
     else:
-        print("Enter valid option")
+        print("Enter a valid option")
     options()
+
+# Entry point of the program
+print("-----------------------------------------------------------")
+print("--------------------WELCOME TO OUR SHOP--------------------")
+print("-----------------------------------------------------------")
 details()
 options()

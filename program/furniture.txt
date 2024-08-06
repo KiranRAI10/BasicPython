@@ -1,0 +1,6 @@
+1, HNI Corporation, BUNK BED, 260, $400.0
+2, HNI CorporationHaworth Inc., TWIN BED, 260, $600.0
+3, Achham furniture, SLEEPER SOFA, 50, $200.0
+4, Kimball International Inc., CORNER SOFA, 75, $350.0
+5, Kohler Co., ARMCHAIR, 30, $150.0
+6, Masco Corporation, DESK CHAIR, 40, $100.0
