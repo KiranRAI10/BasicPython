@@ -1,21 +1,14 @@
 
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
-    Date: 2024-08-06 21:08:26     
-    Distributor name: HELLO
+    Date: 2024-08-07 11:52:14     
+    Distributor name: HNI CORPORATION
     ___________________________________________________________________
     
             Product: BUNK BED                                        
-            Quantity: 20                                              
+            Quantity: 2                                              
             Per price: 400.00                                  
-            Total without VAT: 8000.00                        
-            Total with VAT: 9040.00                                              
-            ___________________________________________________________________
-            
-            Product: TWIN BED                                        
-            Quantity: 20                                              
-            Per price: 600.00                                  
-            Total without VAT: 12000.00                        
-            Total with VAT: 13560.00                                              
+            Total without VAT: 800.00                        
+            Total with VAT: 904.00                                              
             ___________________________________________________________________
             
     Thank you for your order!

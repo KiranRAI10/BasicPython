@@ -1,14 +1,14 @@
 
     *-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-* 
-    Date: 2024-08-06 21:08:41     
-    Customer name: HELLO
+    Date: 2024-08-09 09:50:24     
+    Customer name: KIRAN
     ___________________________________________________________________
     
-            Product: BUNK BED                                        
-            Quantity: 100                                              
-            Per price: 400.00                                  
-            Total without Shipping: 40000.00                        
-            Total with Shipping: 40050.00                                              
+            Product: TWIN BED                                        
+            Quantity: 10                                              
+            Per price: 600.00                                  
+            Total without Shipping: 6000.00                        
+            Total with Shipping: 6830.00                                              
             ___________________________________________________________________
             
     Thank you for your order!
